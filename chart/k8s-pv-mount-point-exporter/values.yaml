@@ -1,46 +1,35 @@
 env:
   METRICS_LISTEN: ":8088"
-
 image:
   repository: ghcr.io/signicat/k8s-pv-mount-point-exporter
   pullPolicy: Always
-  tag: "0.1.8"
-
+  tag: "0.1.10"
 # Enable creation of ServiceMonitor object
 serviceMonitor:
   enabled: true
   scheme: http
   tlsConfig: {}
-
 # Create VictoriaMetrics VMRule that creates a new time-series `rr_disk_info` which combines useful metadata from
 # k8s-pv-mount-point-exporter and kube-state-metrics into an awesome package!
 vmrule:
   enabled: false
-
 metrics:
   port: 8088
-
 nameOverride: ""
-
 fullnameOverride: ""
-
 podAnnotations: {}
-
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 10001
   runAsGroup: 10001
   fsGroup: 10001
-
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
   capabilities:
     drop: ["ALL"]
-
 service:
   port: 80
-
 resources:
   limits:
     #  cpu: 100m
@@ -48,9 +37,7 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
-
 tolerations:
   # Tolerate anything
   - operator: "Exists"
-
 affinity: {}
