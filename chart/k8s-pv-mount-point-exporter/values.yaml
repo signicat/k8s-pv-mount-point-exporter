@@ -3,7 +3,7 @@ env:
 image:
   repository: ghcr.io/signicat/k8s-pv-mount-point-exporter
   pullPolicy: Always
-  tag: "1.0.0"
+  tag: "1.0.1"
 # Enable creation of ServiceMonitor object
 serviceMonitor:
   enabled: true
