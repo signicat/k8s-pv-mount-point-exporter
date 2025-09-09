@@ -12,13 +12,9 @@ spec:
   endpoints:
   - port: http-metrics
     path: /metrics
-    # This part is required for services that live in the service mesh
-    # These paths need to correspond to however SubSea team has configured Prometheus
-    # And these values are working as of 2022-06-20
-    scheme: https
+    scheme: {{ .Values.serviceMonitor.scheme }}
+    {{- with .Values.serviceMonitor.tlsConfig }}
     tlsConfig:
-      caFile: /etc/prom-certs/root-cert.pem
-      certFile: /etc/prom-certs/cert-chain.pem
-      insecureSkipVerify: true
-      keyFile: /etc/prom-certs/key.pem
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end }}

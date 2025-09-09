@@ -5,7 +5,6 @@ metadata:
   labels:
     {{- include "my-app.labels" . | nindent 4 }}
 spec:
-  # This is somewhat enforced by Gatekeeper, see https://signicat.atlassian.net/wiki/spaces/FUS/pages/193456308272/Gatekeeper+policies
   type: ClusterIP
   ports:
 {{ if .Values.metrics.port }}

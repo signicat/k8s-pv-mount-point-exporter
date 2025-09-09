@@ -57,7 +57,7 @@ type StorageClassInfo struct {
 	Name            string
 	PDType          string // Concatenation of type and replication-type
 	Type            string // Comes from the "parameters.type" field in StorageClass
-	ReplicationType string // Comes from "parameters.replication-type" field in StorageClass. Set to "zonal-pd" if not set.
+	ReplicationType string // Comes from the "parameters.replication-type" field in StorageClass. Default "zonal-pd" if unset.
 }
 
 func setCPUCount() {
@@ -77,7 +77,7 @@ func setCPUCount() {
 
 		fmt.Printf("Node: %s | CPU: %s\n", node.Name, cpuCapacity.String())
 
-		vm.GetOrCreateGauge(fmt.Sprintf(`node_info_cpu_count{app="pv-mount-point-exporter", node="%s", cpus="%s"}`, sanitizeLabelValue(node.Name), cpuCapacity.String()), func() float64 {
+		vm.GetOrCreateGauge(fmt.Sprintf(`node_info_cpu_count{app="k8s-pv-mount-point-exporter", node="%s", cpus="%s"}`, sanitizeLabelValue(node.Name), cpuCapacity.String()), func() float64 {
 			return float64(1)
 		})
 	}
@@ -115,7 +115,7 @@ func updateStorageClasses() {
 			if !ok {
 
 				ourStorageClasses[sc.Name] = sci
-				vm.GetOrCreateGauge(fmt.Sprintf(`storageclass_parameters{app="pv-mount-point-exporter", storageclass="%s", pd_type="%s", type="%s", replication_type="%s", node="%s"}`, sanitizeLabelValue(sci.Name), sanitizeLabelValue(sci.PDType), sanitizeLabelValue(sci.Type), sanitizeLabelValue(sci.ReplicationType), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))), func() float64 {
+				vm.GetOrCreateGauge(fmt.Sprintf(`storageclass_parameters{app="k8s-pv-mount-point-exporter", storageclass="%s", pd_type="%s", type="%s", replication_type="%s", node="%s"}`, sanitizeLabelValue(sci.Name), sanitizeLabelValue(sci.PDType), sanitizeLabelValue(sci.Type), sanitizeLabelValue(sci.ReplicationType), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))), func() float64 {
 					return float64(1)
 				})
 			}
@@ -126,7 +126,7 @@ func updateStorageClasses() {
 			_, ok := latestStorageClasses[sci.Name]
 			if !ok {
 				delete(ourStorageClasses, storageClass)
-				vm.UnregisterMetric(fmt.Sprintf(`storageclass_parameters{app="pv-mount-point-exporter", storageclass="%s", pd_type="%s", type="%s", replication_type="%s", node="%s"}`, sanitizeLabelValue(sci.Name), sanitizeLabelValue(sci.PDType), sanitizeLabelValue(sci.Type), sanitizeLabelValue(sci.ReplicationType), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))))
+				vm.UnregisterMetric(fmt.Sprintf(`storageclass_parameters{app="k8s-pv-mount-point-exporter", storageclass="%s", pd_type="%s", type="%s", replication_type="%s", node="%s"}`, sanitizeLabelValue(sci.Name), sanitizeLabelValue(sci.PDType), sanitizeLabelValue(sci.Type), sanitizeLabelValue(sci.ReplicationType), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))))
 			}
 		}
 
@@ -180,7 +180,7 @@ func updateMountPoints(ctx context.Context) {
 					_, ok := mountPointToPV[device]
 					if !ok {
 						mountPointToPV[device] = pvc
-						vm.GetOrCreateGauge(fmt.Sprintf(`persistentvolume_mount_point_info{app="pv-mount-point-exporter", device="%s", persistentvolume="%s", volumename="%s", node="%s"}`, sanitizeLabelValue(device), sanitizeLabelValue(pvc), sanitizeLabelValue(pvc), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))), func() float64 {
+						vm.GetOrCreateGauge(fmt.Sprintf(`persistentvolume_mount_point_info{app="k8s-pv-mount-point-exporter", device="%s", persistentvolume="%s", volumename="%s", node="%s"}`, sanitizeLabelValue(device), sanitizeLabelValue(pvc), sanitizeLabelValue(pvc), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))), func() float64 {
 							return float64(1)
 						})
 					}
@@ -194,7 +194,7 @@ func updateMountPoints(ctx context.Context) {
 				_, ok := latestMountPointToPV[device]
 				if !ok {
 					delete(mountPointToPV, device)
-					vm.UnregisterMetric(fmt.Sprintf(`persistentvolume_mount_point_info{app="pv-mount-point-exporter", device="%s", persistentvolume="%s", volumename="%s", node="%s"}`, sanitizeLabelValue(device), sanitizeLabelValue(pvc), sanitizeLabelValue(pvc), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))))
+					vm.UnregisterMetric(fmt.Sprintf(`persistentvolume_mount_point_info{app="k8s-pv-mount-point-exporter", device="%s", persistentvolume="%s", volumename="%s", node="%s"}`, sanitizeLabelValue(device), sanitizeLabelValue(pvc), sanitizeLabelValue(pvc), sanitizeLabelValue(os.Getenv("K8S_NODE_NAME"))))
 				}
 			}
 		}
@@ -205,11 +205,11 @@ func updateMountPoints(ctx context.Context) {
 func serveMetrics(metricsListen, version, revision, branch, buildTimeStr string) {
 	buildTime, _ := time.Parse(time.RFC3339, buildTimeStr)
 
-	vm.GetOrCreateGauge(fmt.Sprintf(`signicat_build_info{app="pv-mount-point-exporter", version="%s", revision="%s", branch="%s", buildtime="%v"}`, version, revision, branch, buildTime.Unix()), func() float64 {
+	vm.GetOrCreateGauge(fmt.Sprintf(`build_info{app="k8s-pv-mount-point-exporter", version="%s", revision="%s", branch="%s", buildtime="%v"}`, version, revision, branch, buildTime.Unix()), func() float64 {
 		return float64(1)
 	})
 
-	vm.GetOrCreateGauge(fmt.Sprintf(`signicat_build_time{app="pv-mount-point-exporter", version="%s", revision="%s", branch="%s"}`, version, revision, branch), func() float64 {
+	vm.GetOrCreateGauge(fmt.Sprintf(`build_time{app="k8s-v-mount-point-exporter", version="%s", revision="%s", branch="%s"}`, version, revision, branch), func() float64 {
 		return float64(buildTime.Unix())
 	})
 
