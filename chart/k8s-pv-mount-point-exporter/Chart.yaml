@@ -1,9 +1,9 @@
 apiVersion: v2
-name: pv-mount-point-exporter
-description: Signicat DevTools PersistentVolume MountPoint Exporter
+name: k8s-pv-mount-point-exporter
+description: Kubernetes PersistentVolume MountPoint Exporter
 
 type: application
 
-version: 1.0.0
+version: 1.0.1
 
-appVersion: "1.0.0" # Will be used in GitHub Actions to set Container image tag and update helm chart "image.tag"
+appVersion: "1.0.1" # Will be used in GitHub Actions to set Container image tag and update helm chart "image.tag"

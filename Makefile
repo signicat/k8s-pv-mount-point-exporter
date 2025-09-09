@@ -4,7 +4,7 @@ DOCKER_IMAGE ?= k8s-pv-mount-point-exporter
 REVISION ?= $(shell git rev-parse --short HEAD 2> /dev/null || echo 'unknown')
 BRANCH   ?= $(shell git rev-parse --abbrev-ref HEAD 2> /dev/null || echo 'unknown')
 
-VERSION  ?= $(shell yq '.appVersion' chart/Chart.yaml 2> /dev/null || echo 'unknown')
+VERSION  ?= $(shell yq '.appVersion' chart/k8s-pv-mount-point-exporter/Chart.yaml 2> /dev/null || echo 'unknown')
 BUILDTIME := $(shell date -Iseconds)
 
 LDFLAGS   := -X main.Version=$(VERSION)
