@@ -4,8 +4,6 @@ on:
   push:
     #branches:
     #  - main
-    paths:
-      - 'chart/**'
 
 jobs:
   build-helm-chart:
