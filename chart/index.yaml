@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  pv-mount-point-exporter:
+  - apiVersion: v2
+    appVersion: 0.1.7
+    created: "2025-09-09T21:50:14.653336+02:00"
+    description: Signicat DevTools PersistentVolume MountPoint Exporter
+    digest: 96c0d40b664dee99b3b65d8eb4f691e98fb9ca4f7e71aae1db04b085bb81e2e7
+    name: pv-mount-point-exporter
+    type: application
+    urls:
+    - pv-mount-point-exporter-0.1.7.tgz
+    version: 0.1.7
+generated: "2025-09-09T21:50:14.652778+02:00"

@@ -31,6 +31,14 @@ Optionally creates a Victoria Metrics Recording Rule (VMRule) that combines labe
 
 To create a new metric `rr_disk_info` with all relevant disk related labels for easier joining and aggregation later.
 
+### Kubernetes
+
+  helm repo add k8s-pv-mount-point-exporter 'https://raw.githubusercontent.com/signicat/k8s-pv-mount-point-exporter/main/chart/'
+  helm repo update
+
+  kubectl create namespace k8s-pv-mount-point-exporter
+  helm upgrade --install --namespace=k8s-pv-mount-point-exporter k8s-pv-mount-point-exporter k8s-pv-mount-point-exporter/k8s-pv-mount-point-exporter
+
 ## How it works
 
 ### persistentvolume_mount_point_info
@@ -54,3 +62,9 @@ Required environment variables:
 - `K8S_NODE_NAME` - Hostname of node for metric label purposes
 - `METRICS_LISTEN` - Address to run metrics-server on. For example `:8088` or `localhost:8088`.
 - `MOCK_MOUNT_OUTPUT` - Use contents of `testing/mount.txt` instead of output from `mount`. Useful for testing.
+
+## Development: Updating helm chart
+
+    cd chart/
+    helm package k8s-pv-mount-point-exporter/
+    helm repo index .

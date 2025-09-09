@@ -1,0 +1,37 @@
+{{- if .Values.vmrule.enabled }}
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: {{ include "my-app.fullname" . }}-rr-disk-info
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
+spec:
+  groups:
+    - name: rr_disk_info
+      interval: 1m
+      rules:
+        - record: rr_disk_info
+          expr: |-
+            (
+              (
+                (
+                  kube_pod_spec_volumes_persistentvolumeclaims_info
+                  * on(persistentvolumeclaim, namespace)
+                  group_left(storageclass, volumename)
+                  kube_persistentvolumeclaim_info
+                )
+                *
+                on(volumename)
+                group_left(device, node, persistentvolume)
+                persistentvolume_mount_point_info
+              )
+              *
+              on(storageclass)
+              group_left(type, replication_type, pd_type)
+              max(storageclass_parameters) by (storageclass, type, pd_type, replication_type)
+            )
+            *
+            on(node)
+            group_left(label_node_kubernetes_io_instance_type, label_cloud_google_com_machine_family, label_topology_gke_io_zone, label_cloud_google_com_gke_nodepool, label_cloud_google_com_gke_provisioning)
+            kube_node_labels
+{{- end }}
