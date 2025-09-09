@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "my-app.fullname" . }}
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+{{ if .Values.metrics.port }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: http-metrics # Beware that the name actually needs to start with `http-` for it to work properly with istio: https://istio.io/latest/docs/ops/configuration/traffic-management/protocol-selection/
+{{ end }}
+  selector:
+    {{- include "my-app.selectorLabels" . | nindent 4 }}

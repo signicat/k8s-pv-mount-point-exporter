@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "my-app.fullname" . }}
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "my-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "my-app.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "my-app.fullname" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          env:
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: METRICS_LISTEN
+              value: {{ .Values.env.METRICS_LISTEN }}
+
+          volumeMounts:
+          - mountPath: /host-var-lib-kubelet-pods
+            name: host-var-lib-kubelet-pods
+            # Note that readOnly does not propagate to sub-mounts which WILL be writable.
+            # I.e. all actual volumes mounted to Pods.
+            # https://kubernetes.io/blog/2024/04/23/recursive-read-only-mounts/#new-mount-option-recursivereadonly
+            readOnly: true
+            # recursiveReadOnly: IfPossible # Alpha. Requires feature gate?
+            mountPropagation: HostToContainer
+
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: 8088
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      # https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      # https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      volumes:
+      - name: host-var-lib-kubelet-pods
+        hostPath:
+          path: /var/lib/kubelet/pods/
+          type: Directory
