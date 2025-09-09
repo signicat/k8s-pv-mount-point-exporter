@@ -1,4 +1,4 @@
-name: Build and push Docker image
+name: Build Docker image
 
 env:
   CONTAINER_IMAGE: ghcr.io/signicat/k8s-pv-mount-point-exporter
@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches:
+    branches-ignore:
       - main
     paths-ignore:
       - 'chart/**'
