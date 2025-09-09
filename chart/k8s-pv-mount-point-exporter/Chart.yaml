@@ -4,6 +4,6 @@ description: Signicat DevTools PersistentVolume MountPoint Exporter
 
 type: application
 
-version: 0.1.7
+version: 0.1.8
 
-appVersion: "0.1.7" # Should match values.yaml image.tag
+appVersion: "0.1.8" # Will be used in GitHub Actions to set Container image tag and update helm chart "image.tag"

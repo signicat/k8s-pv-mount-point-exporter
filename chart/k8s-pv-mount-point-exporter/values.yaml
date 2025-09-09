@@ -2,9 +2,9 @@ env:
   METRICS_LISTEN: ":8088"
 
 image:
-  repository: europe-docker.pkg.dev/technology-prod-devtools/ar-team-devtools-private/pv-mount-point-exporter
+  repository: ghcr.io/signicat/k8s-pv-mount-point-exporter
   pullPolicy: Always
-  tag: "0.1.7" # Should match Chart.yaml appVersion
+  tag: "0.1.8"
 
 # Enable creation of ServiceMonitor object
 serviceMonitor:
