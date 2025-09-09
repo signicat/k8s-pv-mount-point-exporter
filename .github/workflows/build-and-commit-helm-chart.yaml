@@ -2,8 +2,8 @@ name: Build and push helm chart
 
 on:
   push:
-    #branches:
-    #  - main
+    branches:
+      - main
 
 jobs:
   build-helm-chart:
