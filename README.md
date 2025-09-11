@@ -2,6 +2,8 @@
 
 Export useful metadata about Kubernetes PersistentVolumes as Prometheus metrics.
 
+PS: This is currently opinionated towards GKE, specifically regarding exporting `type` and `replication_type` parameters from the `pd.csi.storage.gke.io` Storage Provisioner.
+
 ## Installation
 
 k8s-pv-mount-point-exporter ships as a helm chart that can be installed like this:
@@ -11,8 +13,6 @@ k8s-pv-mount-point-exporter ships as a helm chart that can be installed like thi
 
     kubectl create namespace k8s-pv-mount-point-exporter
     helm upgrade --install --namespace=k8s-pv-mount-point-exporter k8s-pv-mount-point-exporter k8s-pv-mount-point-exporter/k8s-pv-mount-point-exporter
-
-
 
 ## Metrics exported
 
@@ -49,15 +49,6 @@ storageclass_parameters{
 
 `rr_disk_info` - Optional metric joining lots of useful data:
 
-> PS: Requires VictoriaMetrics and enabling of VMRule in helm chart with `vmrule.enabled=true`.
-
-Optionally create a Victoria Metrics Recording Rule (VMRule) that combines labels from these metrics:
-- kube_pod_spec_volumes_persistentvolumeclaims_info (kube-state-metrics)
-- kube_persistentvolumeclaim_info (kube-state-metrics)
-- kube_node_labels (kube-state-metrics)
-- persistentvolume_mount_point_info (k8s-pv-mount-point-exporter)
-- storageclass_parameters (k8s-pv-mount-point-exporter)
-
 ```
 rr_disk_info{
   device="sdb",
@@ -77,8 +68,17 @@ rr_disk_info{
   type="pd-balanced",
   volume="data",
   volumename="pvc-7ea34ec4-f5b4-4d9f-8756-b6da9d269de0"
-}
+} 1
 ```
+
+> PS: Requires VictoriaMetrics and enabling of VMRule in helm chart with `vmrule.enabled=true`.
+
+Optionally create a Victoria Metrics Recording Rule (VMRule) that combines labels from these metrics:
+- kube_pod_spec_volumes_persistentvolumeclaims_info (kube-state-metrics)
+- kube_persistentvolumeclaim_info (kube-state-metrics)
+- kube_node_labels (kube-state-metrics)
+- persistentvolume_mount_point_info (k8s-pv-mount-point-exporter)
+- storageclass_parameters (k8s-pv-mount-point-exporter)
 
 `node_info_cpu_count` - node name and CPU count
 

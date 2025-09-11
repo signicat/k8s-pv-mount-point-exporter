@@ -57,7 +57,7 @@ type StorageClassInfo struct {
 	Name            string
 	PDType          string // Concatenation of type and replication-type
 	Type            string // Comes from the "parameters.type" field in StorageClass
-	ReplicationType string // Comes from the "parameters.replication-type" field in StorageClass. Default "zonal-pd" if unset.
+	ReplicationType string // Comes from the "parameters.replication-type" field in StorageClass.
 }
 
 func setCPUCount() {
@@ -254,13 +254,16 @@ func getCompositeName(sc storagev1.StorageClass) (sci StorageClassInfo) {
 	}
 	sci.Type = paramType
 
+	// Only Persistent Disks have "replication-type" parameter
+	// For HyperDisks they are called high-availability and is part of the "type" parameter itself.
 	paramReplicationType, ok := sc.Parameters["replication-type"]
-	if !ok {
+	if ok {
+		sci.ReplicationType = paramReplicationType
 		paramReplicationType = "zonal-pd"
+		sci.PDType = fmt.Sprintf("%s-%s", paramType, paramReplicationType)
+	} else {
+		sci.PDType = paramType
 	}
-	sci.ReplicationType = paramReplicationType
-
-	sci.PDType = fmt.Sprintf("%s-%s", paramType, paramReplicationType)
 
 	return sci
 }
