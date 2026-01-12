@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   k8s-pv-mount-point-exporter:
   - apiVersion: v2
+    appVersion: 1.0.3
+    created: "2026-01-12T19:40:22.638745891Z"
+    description: Kubernetes PersistentVolume MountPoint Exporter
+    digest: 53f6d8fd3a45a527725a4215c69c74f11ea7abe9303dd49c73be739263d3e581
+    name: k8s-pv-mount-point-exporter
+    type: application
+    urls:
+    - k8s-pv-mount-point-exporter-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v2
     appVersion: 1.0.2
-    created: "2025-09-11T09:42:46.955879855Z"
+    created: "2026-01-12T19:40:22.638417986Z"
     description: Kubernetes PersistentVolume MountPoint Exporter
     digest: 2c49f88eb042444efef1ececf6022b6127f87b7c67169facb1c0073dc07785da
     name: k8s-pv-mount-point-exporter
@@ -13,7 +23,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: 1.0.1
-    created: "2025-09-11T09:42:46.955585062Z"
+    created: "2026-01-12T19:40:22.638078058Z"
     description: Kubernetes PersistentVolume MountPoint Exporter
     digest: 921d2ea136d40b3952a199c34d2d62e68fd48ba89ef8e5724cd2ef897b04f12b
     name: k8s-pv-mount-point-exporter
@@ -21,4 +31,4 @@ entries:
     urls:
     - k8s-pv-mount-point-exporter-1.0.1.tgz
     version: 1.0.1
-generated: "2025-09-11T09:42:46.955159402Z"
+generated: "2026-01-12T19:40:22.63761509Z"
