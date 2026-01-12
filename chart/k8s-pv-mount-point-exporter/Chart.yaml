@@ -4,6 +4,6 @@ description: Kubernetes PersistentVolume MountPoint Exporter
 
 type: application
 
-version: 1.0.2
+version: 1.0.3
 
-appVersion: "1.0.2" # Will be used in GitHub Actions to set Container image tag and update helm chart "image.tag"
+appVersion: "1.0.3" # Will be used in GitHub Actions to set Container image tag and update helm chart "image.tag"

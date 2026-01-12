@@ -23,6 +23,7 @@ podSecurityContext:
   runAsUser: 10001
   runAsGroup: 10001
   fsGroup: 10001
+# priorityClassName: default
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
